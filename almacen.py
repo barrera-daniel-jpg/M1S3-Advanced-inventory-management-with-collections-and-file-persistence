@@ -38,8 +38,28 @@ def add_product():
     print(f"El producto registrado satisfactoriamente")
     return product_and_more
 
-def calcular_estadisticas ():
-    contador = Counter(bodega)
-    unidades_totales = contador
-    print(unidades_totales)
-    return unidades_totales
+def calcular_estadisticas(inventario):
+    if not inventario:
+        print("El inventario está vacío.")
+        return
+
+    # Lambda para calcular el subtotal de cada producto
+    subtotal = lambda p: p["Unit_price"] * p["Stock"]
+
+    unidades_totales = sum(p["Stock"] for p in inventario)
+    valor_total = sum(subtotal(p) for p in inventario)
+    producto_mas_caro = max(inventario, key=lambda p: p["Unit_price"])
+    producto_mayor_stock = max(inventario, key=lambda p: p["Stock"])
+
+    print("\n" + "=" * 40)
+    print("       ESTADÍSTICAS DEL INVENTARIO")
+    print("=" * 40)
+    print(f"   Unidades totales en stock : {unidades_totales}")
+    print(f"   Valor total del inventario: ${valor_total:,.2f}")
+    print(f"   Producto más caro         : {producto_mas_caro['Name']} (${producto_mas_caro['Unit_price']:,.2f})")
+    print(f"   Mayor stock               : {producto_mayor_stock['Name']} ({producto_mayor_stock['Stock']} unidades)")
+    print("-" * 40)
+    print("  Subtotales por producto:")
+    for p in inventario:
+        print(f"    - {p['Name']:<15} ${subtotal(p):>10,.2f}")
+    print("=" * 40 + "\n")
